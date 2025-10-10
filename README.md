@@ -6,7 +6,7 @@
 
 > Supposons que ta clé est montée sur `/Volumes/NO NAME` et que ton projet est dans `/Volumes/NO NAME/N_Corps_elastiques_1D_2D`.
 
---
+----
 
 ### Option A — méthode simple avec **python - venv** (macOS / Linux / Terminal zsh)
 
@@ -38,7 +38,7 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 
 > Ensuite dans l’interface web, choisis le kernel `Python (mon_projet_env)` si tu as enregistré le kernel.
 
---
+----
 
 ### Option B — avec conda (si tu utilises Anaconda / Miniconda)
 
@@ -63,7 +63,7 @@ conda env create -f environment.yml -n mon_projet_env
 conda activate mon_projet_env
 ```
 
---
+----
 
 ### Option C — si tu veux éviter d’installer un env : lancer Jupyter avec `python -m` depuis la clé (moins recommandé)
 Si tu as déjà Python sur la clé (rare), ou si tu veux utiliser l’interpréteur système :
