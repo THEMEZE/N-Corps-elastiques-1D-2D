@@ -443,7 +443,7 @@ class AnimationManager:
 
         def gaussian_Y(v, mean, sigma) : return  1/( ordre * np.power(np.abs(v),1-1/ordre)) * gaussian_X(v, mean, sigma) 
 
-        vmax = int(max([(mean_vx + 3*sigma_vx)**ordre , (mean_vy + 3*sigma_vy)**ordre]))+1 
+        vmax = int(max([(mean_vx + 3*sigma_vx/ordre)**ordre , (mean_vy + 3*sigma_vy/ordre)**ordre]))+1 
         
         
         if ordre % 2 == 1 :  
@@ -465,7 +465,7 @@ class AnimationManager:
         ax.set_ylim(0, pmax)  # normalisé
         
         # Initialisation vide
-        bins = np.linspace(vmax_min, vmax, 30)
+        bins = np.linspace(vmax_min, vmax, int(30*ordre))
         hist_vx = ax.bar(bins[:-1], np.zeros_like(bins[:-1]), width=bins[1]-bins[0],
                          color='goldenrod', alpha=0.6, label=rf"$v_x^{ordre}$")
         hist_vy = ax.bar(bins[:-1], np.zeros_like(bins[:-1]), width=bins[1]-bins[0],
@@ -519,7 +519,7 @@ if __name__ == "__main__":
     system.init_velocities("double_gaussian")
 
     anim = AnimationManager(system)
-    anim.animate_positions(n_frames=500, fps=60, fmt="mp4")
+    anim.animate_positions(n_frames=60, fps=60, fmt="mp4")
     anim.animate_velocity_distribution(fps=60)
     anim.animate_moment_ordre_n_distribution(fps=60, ordre = 1 )
     anim.animate_moment_ordre_n_distribution(fps=60, ordre = 2 )
@@ -538,8 +538,6 @@ if __name__ == "__main__":
     #analyzer = VelocityAnalyzer(system, output_dir="animations")
     #analyzer.animate_correlation(order=2)
     #analyzer.animate_cumulant(order=2)
-
-
 ```
 
 ## 🧰 Fichier `requirements.txt`
