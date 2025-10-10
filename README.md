@@ -6,7 +6,6 @@
 
 > Supposons que ta clé est montée sur `/Volumes/NO NAME` et que ton projet est dans `/Volumes/NO NAME/N_Corps_elastiques_1D_2D`.
 
-----
 
 ### Option A — méthode simple avec **python - venv** (macOS / Linux / Terminal zsh)
 
@@ -38,7 +37,6 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 
 > Ensuite dans l’interface web, choisis le kernel `Python (mon_projet_env)` si tu as enregistré le kernel.
 
-----
 
 ### Option B — avec conda (si tu utilises Anaconda / Miniconda)
 
@@ -63,14 +61,55 @@ conda env create -f environment.yml -n mon_projet_env
 conda activate mon_projet_env
 ```
 
-----
 
 ### Option C — si tu veux éviter d’installer un env : lancer Jupyter avec `python -m` depuis la clé (moins recommandé)
 Si tu as déjà Python sur la clé (rare), ou si tu veux utiliser l’interpréteur système :
 ```bash
-cd "/Volumes/NO NAME/mon_projet"
+cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 python3 -m pip install --user -r requirements.txt   # installe dans ~/.local
 python3 -m notebook --notebook-dir="."
+```
+
+### Cas particulier : tu veux conserver l’environnement sur la clé malgré les risques
+
+Si tu veux absolument créer le venv sur la clé :
+
+```bash
+cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+jupyter notebook --notebook-dir="."
+```
+> [!WARNING]
+> ⚠️ Si la clé est formatée en FAT32, certains exécutables/script pourront échouer (pas de permission d’exécution, pas de liens symboliques). Si tu as des erreurs `Read-only file system` ou perte de permissions, reformatte la clé en exFAT ou APFS (si tu peux) ou utilise l’option recommandée : venv local.
+
+### Résolution des problèmes courants
+
+- **Permission denied / Read-only file system :** la clé est montée en lecture seule ; démonte et remonte en écriture ou vérifie que la clé n’est pas verrouillée physiquement.
+
+- **Nom de volume avec espaces :** entoure le chemin de guillemets comme ci-dessus `"/Volumes/NO NAME/N_Corps_elastiques_1D_2D"`.
+
+- **Clé lente / accès disque lent :** créer le venv local + travailler sur la clé (notebooks sur la clé) ou copier le repo en local.
+
+- **Kernel absent dans Jupyter :** installe `ipykernel` et exécute `python -m ipykernel install --user --name ....`
+
+- **requirements.txt incomplet / erreur pip :** regarde les lignes d’erreur, certaines bibliothèques peuvent nécessiter des dépendances système (Xcode command line tools, libffi, etc.).
+
+- **Utiliser JupyterLab :** remplace `jupyter notebook` par `jupyter lab` si tu préfères l’interface moderne (installer `jupyterlab`).
+
+### Exemple complet (copier-coller, venv sur le home, clé `/Volumes/NO NAME/N_Corps_elastiques_1D_2D`)
+```bash
+# Terminal (macOS)
+cd "/Volumes/NO NAME/mon_projet"
+python3 -m venv ~/venvs/mon_projet_env
+source ~/venvs/mon_projet_env/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install jupyter ipykernel
+python -m ipykernel install --user --name mon_projet_env --display-name "Python (mon_projet_env)"
+jupyter notebook --notebook-dir="/Volumes/NO NAME/mon_projet"
+
 ```
 ---
 
