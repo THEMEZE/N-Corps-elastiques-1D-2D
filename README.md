@@ -13,9 +13,9 @@
 
 ```bash
 # créer venv dans ton home (ou .venvs)
-python3 -m venv ~/venvs/mon_projet_env
+python3 -m venv ~/venvs/N_Corps_elastiques_1D_2D_env
 # activer
-source ~/venvs/mon_projet_env/bin/activate
+source ~/venvs/N_Corps_elastiques_1D_2D_env/bin/activate
 # mettre pip à jour
 pip install --upgrade pip
 # installer les dépendances
@@ -23,19 +23,19 @@ pip install -r requirements.txt
 # installer jupyter et ipykernel si besoin
 pip install jupyter ipykernel
 # enregistrer le kernel (facultatif mais pratique)
-python -m ipykernel install --user --name mon_projet_env --display-name "Python (mon_projet_env)"
+python -m ipykernel install --user --name N_Corps_elastiques_1D_2D_env --display-name "Python (N_Corps_elastiques_1D_2D_env)"
 ```
 
 2. lancer Jupyter Notebook **dans le dossier de la clé** :
 ```bash
-# méthode 1: lancer depuis le répertoire ouvert (si tu as cd dans /Volumes/NO NAME/mon_projet)
+# méthode 1: lancer depuis le répertoire ouvert (si tu as cd dans /Volumes/NO NAME/N_Corps_elastiques_1D_2D)
 jupyter notebook
 
 # ou méthode 2: lancer explicitement en pointant le dossier de la clé
 jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 ```
 
-> Ensuite dans l’interface web, choisis le kernel `Python (mon_projet_env)` si tu as enregistré le kernel.
+> Ensuite dans l’interface web, choisis le kernel `Python (N_Corps_elastiques_1D_2D_env)` si tu as enregistré le kernel.
 
 
 ### Option B — avec conda (si tu utilises Anaconda / Miniconda)
@@ -44,21 +44,21 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 ```bash
 cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 # créer l'env (ici on installe via pip requirements.txt)
-conda create -n mon_projet_env python=3.11 -y
-conda activate mon_projet_env
+conda create -n N_Corps_elastiques_1D_2D_env python=3.11 -y
+conda activate N_Corps_elastiques_1D_2D_env
 # installer pip si besoin
 conda install pip -y
 pip install -r requirements.txt
 pip install jupyter ipykernel
-python -m ipykernel install --user --name mon_projet_env --display-name "Conda (mon_projet_env)"
+python -m ipykernel install --user --name N_Corps_elastiques_1D_2D_env --display-name "Conda (N_Corps_elastiques_1D_2D_env)"
 # lancer jupyter
 jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 ```
 
 Si tu as un environment.yml tu peux faire :
 ```bash
-conda env create -f environment.yml -n mon_projet_env
-conda activate mon_projet_env
+conda env create -f environment.yml -n N_Corps_elastiques_1D_2D_env
+conda activate N_Corps_elastiques_1D_2D_env
 ```
 
 
@@ -101,14 +101,14 @@ jupyter notebook --notebook-dir="."
 ### Exemple complet (copier-coller, venv sur le home, clé `/Volumes/NO NAME/N_Corps_elastiques_1D_2D`)
 ```bash
 # Terminal (macOS)
-cd "/Volumes/NO NAME/mon_projet"
-python3 -m venv ~/venvs/mon_projet_env
-source ~/venvs/mon_projet_env/bin/activate
+cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
+python3 -m venv ~/venvs/N_Corps_elastiques_1D_2D_env
+source ~/venvs/N_Corps_elastiques_1D_2D_env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 pip install jupyter ipykernel
-python -m ipykernel install --user --name mon_projet_env --display-name "Python (mon_projet_env)"
-jupyter notebook --notebook-dir="/Volumes/NO NAME/mon_projet"
+python -m ipykernel install --user --name N_Corps_elastiques_1D_2D_env --display-name "Python (N_Corps_elastiques_1D_2D_env)"
+jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
 
 ```
 ---
