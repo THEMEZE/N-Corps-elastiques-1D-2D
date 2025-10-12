@@ -11,6 +11,25 @@
 
 ![Demo](./vitrines/2D_positions_animation.gif)
 
+<p align="center">
+  <img src="./vitrines/2D_positions_animation.gif" width="45%">
+  <img src="./vitrines/2D_velocity_distribution.gif" width="45%">
+</p>
+
+<p align="center">
+  <em>2D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+</p>
+
+<p align="center">
+  <img src="./vitrines/1D_positions_animation.gif" width="45%">
+  <img src="./vitrines/1D_velocity_distribution.gif" width="45%">
+</p>
+
+<p align="center">
+  <em>1D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+</p>
+
+
 ---
 
 ## ⚙️ Clonage 
@@ -53,11 +72,11 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 
 ## ▶️ run
 > dans `main.ipynb`
-- 2D lancer la cellule **Calcules et repésentaions `simulation_gaz_2d.py`** dans `/outputs/`
+- 2D lancer la cellule **Calcules et repésentaions `simulation_gaz_2d.py`** dans `./outputs/`
     - `2D_positions_animation.mp4`: animation spatial
     - `2D_velocity_distribution.mp4`: animation distibution de vitesse 
     - `2D_velocity_distribution_order_1.mp4` ... `2D_velocity_distribution_order_n.mp4` ; animation distibution de vitesse ^ 1  ... n .
-- 1D lancer la cellule **Calcules et repésentaions `simulation_gaz_1d.py`** dans `/outputs/`
+- 1D lancer la cellule **Calcules et repésentaions `simulation_gaz_1d.py`** dans `./outputs/`
     - `1D_positions_animation.mp4`: animation spatial
     - `1D_velocity_distribution.mp4`: animation distibution de vitesse 
 
@@ -70,12 +89,28 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 
 Si la vidéo est courte, le plus simple est de la convertir en **GIF** :
 
+> Animation spatial 2D 
 ```bash
 ffmpeg -i ./outputs/2D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/2D_positions_animation.gif
 ```
 
+> Animation distribution vistesse 2D 
+```bash
+ffmpeg -i ./outputs/2D_velocity_distribution.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/2D_velocity_distribution.gif
+```
+> Animation distribution vistesse 2D par exemple ordre 2 
+```bash
+ffmpeg -i ./outputs/2D_velocity_distribution_order_2.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/2D_velocity_distribution_order_2.gif
+```
+
+> Animation spatial 1D 
 ```bash
 ffmpeg -i ./outputs/1D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/1D_positions_animation.gif
+```
+
+> Animation distribution vistesse 1D 
+```bash
+ffmpeg -i ./outputs/1D_velocity_distribution.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/1D_velocity_distribution.gif
 ```
 
 ## 🎬 Script bash qui extrait les images (frames) d’une vidéo
@@ -108,7 +143,7 @@ input="./outputs/2D_velocity_distribution.mp4"
 output_dir="./outputs/frames_2D_velocity_distribution"
 ```
 
-> Animation distribution vistesse 2D par exemple ordre 1 
+> Animation distribution vistesse 2D par exemple ordre 2 
 ```bash
 input="./outputs/2D_velocity_distribution_order_2.mp4"
 output_dir="./outputs/2D_velocity_distribution_order_2"
