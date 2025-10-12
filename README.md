@@ -11,29 +11,6 @@
 
 ![Demo](./vitrines/2D_positions_animation.gif)
 
-<p align="center">
-  <img src="./vitrines/2D_positions_animation.gif" width="45%">
-  <img src="./vitrines/2D_velocity_distribution.gif" width="45%">
-</p>
-
-<p align="center">
-  <em>2D : Positions (gauche) — Distribution de Vitesses (droite)</em>
-</p>
-
-> [!IMPORTANT]
-> Thermalisation
-
-<p align="center">
-  <img src="./vitrines/1D_positions_animation.gif" width="45%">
-  <img src="./vitrines/1D_velocity_distribution.gif" width="45%">
-</p>
-
-<p align="center">
-  <em>1D : Positions (gauche) — Distribution de Vitesses (droite)</em>
-</p>
-
-> [!IMPORTANT]
-> Distribution de vistesse constant
 
 <!-- Bloc 2D -->
 <div align="center" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
@@ -47,12 +24,12 @@
   <em>2D : Positions (gauche) — Distribution de Vitesses (droite)</em>
 </p>
 
-<div align="center">
+<!-- <div align="center"> -->
 
 > [!IMPORTANT]  
 > **Thermalisation**
 
-</div>
+<!-- </div> -->
 
 ---
 
@@ -68,12 +45,12 @@
   <em>1D : Positions (gauche) — Distribution de Vitesses (droite)</em>
 </p>
 
-<div align="center">
+<!-- <div align="center"> -->
 
 > [!IMPORTANT]  
 > **Distribution de vitesse constante**
 
-</div>
+<!-- </div> -->
 
 
 
@@ -227,7 +204,7 @@ git commit -m "Mise à jour"
 git push
 ```
 
-
+---
 
 ## 🚀 Fichier : `simulation_gaz_2d.py` En fait c'est dans `main.ipynb`
 ```python
