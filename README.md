@@ -7,7 +7,7 @@
 - d’analyser **les observables physiques** (moments, histogrammes, etc.),
 - et de **générer des animations** (GIF, MP4, images de frames).
 
-## 🚀 Fichier : `simulation_gaz_2d.py`
+## 🚀 Fichier : `simulation_gaz_2d.py` En fait c'est dans `main.ipynb`
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -81,8 +81,8 @@ class ParticleSystem:
             self.velocities = np.random.normal(0.0, sigma, (self.num_balls, 2))
         elif mode == "double_gaussian":
             half = self.num_balls // 2
-            sigma = 0.01
             mu = 0.5
+            sigma = mu/10
             self.velocities[:half] = np.random.normal([-mu, -mu], [sigma, sigma], (half, 2))
             self.velocities[half:] = np.random.normal([mu, mu], [sigma, sigma], (self.num_balls - half, 2))
         else:
@@ -139,11 +139,11 @@ class SimulationRecorder:
     def save_data(self):
         """Sauvegarde toutes les données de la simulation."""
         np.savez(
-            os.path.join(self.output_dir, "simulation_data.npz"),
+            os.path.join(self.output_dir, "2D_simulation_data.npz"),
             positions=np.array(self.system.history_positions),
             velocities=np.array(self.system.history_velocities)
         )
-        with open(os.path.join(self.output_dir, "params.json"), "w") as f:
+        with open(os.path.join(self.output_dir, "2D_params.json"), "w") as f:
             json.dump({
                 "num_balls": self.system.num_balls,
                 "box_size": self.system.box_size,
@@ -156,8 +156,8 @@ class SimulationRecorder:
     @staticmethod
     def load_data(input_dir="outputs"):
         """Charge les données enregistrées pour rejouer ou analyser."""
-        data = np.load(os.path.join(input_dir, "simulation_data.npz"))
-        with open(os.path.join(input_dir, "params.json")) as f:
+        data = np.load(os.path.join(input_dir, "2D_simulation_data.npz"))
+        with open(os.path.join(input_dir, "2D_params.json")) as f:
             params = json.load(f)
         return data, params
 
@@ -251,7 +251,7 @@ class VelocityAnalyzer:
             return ax
 
         ani = FuncAnimation(fig, update, frames=Nframes, interval=1000/fps, blit=False)
-        output_path = os.path.join(self.output_dir, f"correlation_order_{order}.mp4")
+        output_path = os.path.join(self.output_dir, f"2D_correlation_order_{order}.mp4")
         ani.save(output_path, writer="ffmpeg", fps=fps)
         plt.close(fig)
         print(f"🎞️ Corrélation d'ordre {order} enregistrée : {output_path}")
@@ -306,7 +306,7 @@ class VelocityAnalyzer:
             return ax
 
         ani = FuncAnimation(fig, update, frames=Nframes, interval=1000/fps, blit=False)
-        output_path = os.path.join(self.output_dir, f"cumulant_order_{order}.mp4")
+        output_path = os.path.join(self.output_dir, f"2D_cumulant_order_{order}.mp4")
         ani.save(output_path, writer="ffmpeg", fps=fps)
         plt.close(fig)
         print(f"🎞️ Cumulant d'ordre {order} enregistré : {output_path}")
@@ -332,7 +332,7 @@ class AnimationManager:
                 ax.plot([i, i], [0, self.system.box_size], color='gray', linestyle='--', lw=0.5)
                 ax.plot([0, self.system.box_size], [i, i], color='gray', linestyle='--', lw=0.5)
 
-        scat, = ax.plot([], [], 'o', color='teal', ms=self.system.ball_radius * 85)
+        scat, = ax.plot([], [], 'o', color='teal', ms=self.system.ball_radius * 100)
 
         def init():
             scat.set_data([], [])
@@ -344,14 +344,14 @@ class AnimationManager:
             return scat,
 
         ani = FuncAnimation(fig, update, frames=n_frames, init_func=init, blit=True, interval=50)
-        path = os.path.join(self.output_dir, f"positions_animation.{fmt}")
+        path = os.path.join(self.output_dir, f"2D_positions_animation.{fmt}")
         ani.save(path, writer="ffmpeg", fps=fps, dpi=200)
         plt.close(fig)
         print("🎞️ Animation positions enregistrée :", path)
 
     
 
-    def animate_velocity_distribution(self, fps=24):
+    def animate_2D_velocity_distribution(self, fps=24):
         
 
         # parametres gaussienne thermalisation
@@ -420,7 +420,7 @@ class AnimationManager:
         ani = FuncAnimation(fig, update, frames=len(self.system.history_velocities),
                             interval=1000/fps, blit=False)
         
-        output_path = os.path.join(self.output_dir, "velocity_distribution.mp4")
+        output_path = os.path.join(self.output_dir, "2D_velocity_distribution.mp4")
         ani.save(output_path, writer="ffmpeg", fps=fps)
         plt.close(fig)
         print(f"🎞️ Animation des distributions de vitesses enregistrée dans {output_path}.")
@@ -443,7 +443,7 @@ class AnimationManager:
 
         def gaussian_Y(v, mean, sigma) : return  1/( ordre * np.power(np.abs(v),1-1/ordre)) * gaussian_X(v, mean, sigma) 
 
-        vmax = int(max([(mean_vx + 3*sigma_vx/ordre)**ordre , (mean_vy + 3*sigma_vy/ordre)**ordre]))+1 
+        vmax = int(max([(mean_vx + 3*sigma_vx)**ordre , (mean_vy + 3*sigma_vy)**ordre]))+1 
         
         
         if ordre % 2 == 1 :  
@@ -503,7 +503,7 @@ class AnimationManager:
         ani = FuncAnimation(fig, update, frames=len(self.system.history_velocities),
                             interval=1000/fps, blit=False)
         
-        output_path = os.path.join(self.output_dir, f"velocity_distribution_order_{ordre}.mp4")
+        output_path = os.path.join(self.output_dir, f"2D_velocity_distribution_order_{ordre}.mp4")
         ani.save(output_path, writer="ffmpeg", fps=fps)
         plt.close(fig)
         print(f"🎞️ Animation des distributions de vitesses order : {ordre} enregistrée dans {output_path}.")
@@ -514,13 +514,13 @@ class AnimationManager:
 # 🔹 5. Exemple d’utilisation
 # ================================================================
 if __name__ == "__main__":
-    system = ParticleSystem(num_balls=250, T=10.0)
+    system = ParticleSystem(num_balls=350, T=10.0)
     system.init_positions("uniform")
     system.init_velocities("double_gaussian")
 
     anim = AnimationManager(system)
-    anim.animate_positions(n_frames=60, fps=60, fmt="mp4")
-    anim.animate_velocity_distribution(fps=60)
+    anim.animate_positions(n_frames=600, fps=60, fmt="mp4")
+    anim.animate_2D_velocity_distribution(fps=60)
     anim.animate_moment_ordre_n_distribution(fps=60, ordre = 1 )
     anim.animate_moment_ordre_n_distribution(fps=60, ordre = 2 )
     anim.animate_moment_ordre_n_distribution(fps=60, ordre = 3 )
@@ -540,15 +540,520 @@ if __name__ == "__main__":
     #analyzer.animate_cumulant(order=2)
 ```
 
+## 🚀 Fichier : `simulation_gaz_1d.py` En fait c'est dans `main.ipynb`
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import os
+import json
+
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": ["Helvetica"],
+    "figure.figsize": (5, 5)
+})
+
+
+# ================================================================
+# 🔹 1. Classe : système de particules
+# ================================================================
+import numpy as np
+
+class ParticleSystem:
+    def __init__(self, num_balls=100, box_size=5, ball_radius=0.09, dt=0.01, T=0.12, max_init_attempts=5000):
+        self.num_balls = num_balls
+        self.box_size = box_size
+        self.ball_radius = ball_radius
+        self.dt = dt
+        self.T = T
+        self.max_init_attempts = max_init_attempts
+
+        self.positions = np.zeros((num_balls, 1))
+        self.velocities = np.zeros((num_balls, 1))
+        self.history_positions = []
+        self.history_velocities = []
+
+    # ==============================================================
+    # 🔹 Initialisation des positions sans recouvrement
+    # ==============================================================
+    def init_positions(self, mode="uniform"):
+        positions = []
+        min_dist = 2 * self.ball_radius
+
+        for n in range(self.num_balls):
+            for attempt in range(self.max_init_attempts):
+                if mode == "uniform":
+                    candidate = np.random.rand(1) * self.box_size
+                elif mode == "double_gaussian":
+                    if n < self.num_balls // 2:
+                        candidate = np.random.normal(1.5, 0.3)
+                    else:
+                        candidate = np.random.normal(3.5, 0.3)
+                else:
+                    raise ValueError(f"Mode inconnu : {mode}")
+
+                # Vérifie la distance avec toutes les particules déjà placées
+                if all(np.linalg.norm(candidate - p) >= min_dist for p in positions):
+                    positions.append(candidate)
+                    break
+            else:
+                raise RuntimeError(f"Impossible de placer la particule {n} sans chevauchement après {self.max_init_attempts} essais")
+
+        self.positions = np.array(positions)
+
+    # ==============================================================
+    # 🔹 Initialisation des vitesses
+    # ==============================================================
+    def init_velocities(self, mode="double_gaussian"):
+        if mode == "uniform":
+            self.velocities = np.random.uniform(-1.0, 1.0, (self.num_balls, 1))
+        elif mode == "maxwell":
+            sigma = np.sqrt(self.T)
+            self.velocities = np.random.normal(0.0, sigma, (self.num_balls, 1))
+        elif mode == "double_gaussian":
+            half = self.num_balls // 2
+            mu = 1
+            sigma = 1
+            self.velocities[:half] = np.random.normal(-mu, sigma, (half, 1))
+            self.velocities[half:] = np.random.normal(mu, sigma, (self.num_balls - half, 1))
+        else:
+            raise ValueError(f"Mode inconnu : {mode}")
+
+    # ==============================================================
+    # 🔹 Mise à jour avec correction d'interpénétration
+    # ==============================================================
+    def update(self):
+        """Mise à jour du système à chaque pas de temps."""
+        self.positions += self.velocities * self.dt
+        self.positions %= self.box_size  # bords périodiques
+        self._handle_collisions()
+        self.history_positions.append(np.copy(self.positions))
+        self.history_velocities.append(np.copy(self.velocities))
+
+    # ==============================================================
+    # 🔹 Collisions élastiques avec correction géométrique
+    # ==============================================================
+    def _handle_collisions(self):
+        for i in range(self.num_balls):
+            for j in range(i + 1, self.num_balls):
+                diff = self.positions[i] - self.positions[j]
+                dist = np.linalg.norm(diff)
+
+                if dist < 2 * self.ball_radius and dist > 0:
+                    direction = diff / dist
+                    dv = self.velocities[i] - self.velocities[j]
+                    v_rel = np.dot(dv, direction)
+
+                    # Collision seulement si les particules se rapprochent
+                    if v_rel < 0:
+                        impulse = v_rel * direction
+                        self.velocities[i] -= impulse
+                        self.velocities[j] += impulse
+
+                        # Correction géométrique : repositionner les particules sans recouvrement
+                        overlap = 2 * self.ball_radius - dist
+                        correction = direction * (overlap / 2)
+                        self.positions[i] += correction
+                        self.positions[j] -= correction
+
+
+
+# ================================================================
+# 🔹 2. Classe : sauvegarde & chargement des données
+# ================================================================
+class SimulationRecorder:
+    def __init__(self, system: ParticleSystem, output_dir="outputs"):
+        self.system = system
+        self.output_dir = output_dir
+        os.makedirs(output_dir, exist_ok=True)
+
+    def save_data(self):
+        """Sauvegarde toutes les données de la simulation."""
+        np.savez(
+            os.path.join(self.output_dir, "1D_simulation_data.npz"),
+            positions=np.array(self.system.history_positions),
+            velocities=np.array(self.system.history_velocities)
+        )
+        with open(os.path.join(self.output_dir, "1D_params.json"), "w") as f:
+            json.dump({
+                "num_balls": self.system.num_balls,
+                "box_size": self.system.box_size,
+                "ball_radius": self.system.ball_radius,
+                "dt": self.system.dt,
+                "T": self.system.T
+            }, f, indent=4)
+        print("✅ Données sauvegardées dans", self.output_dir)
+
+    @staticmethod
+    def load_data(input_dir="outputs"):
+        """Charge les données enregistrées pour rejouer ou analyser."""
+        data = np.load(os.path.join(input_dir, "1D_simulation_data.npz"))
+        with open(os.path.join(input_dir, "1D_params.json")) as f:
+            params = json.load(f)
+        return data, params
+
+
+# ================================================================
+# 🔹 3. Classe : étude physique
+# ================================================================
+
+class VelocityAnalyzer:
+    def __init__(self, system, output_dir="output"):
+        self.system = system
+        self.output_dir = output_dir
+        os.makedirs(output_dir, exist_ok=True)
+
+    # ================================================================
+    # 🔹 CORRELATION D'ORDRE n
+    # ================================================================
+    def animate_correlation(self, order=2, fps=24):
+        """
+        Anime les corrélations d'ordre n de la  vitesses v.
+        - Si n <= 2 : affiche une carte 2D + diagonale
+        - Si n > 2  : affiche uniquement la diagonale moyenne
+        """
+        history = self.system.history_velocities
+        Nframes = len(history)
+        N = history[0].shape[0]
+
+        fig, ax = plt.subplots(figsize=(5, 5))
+
+        def update(frame):
+            ax.cla()
+            vs = history[frame]
+
+            # Corrélations d'ordre n (brute, sans centrage)
+            C = np.outer(vs, vs)**(order//2)
+
+            # Moyenne sur la diagonale
+            diag = np.diag(C)
+
+            if order <= 2:
+                im = ax.imshow(C, cmap='viridis', origin='lower')
+                #if frame == 0 : plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+                ax.set_title(rf"$C^{{({order})}}_x(i,j)$ — frame {frame}", fontsize=14)
+                ax.set_xlabel("i")
+                ax.set_ylabel("j")
+            else:
+                ax.plot(np.arange(N), diag, color='goldenrod', label=r"$C$")
+                ax.set_title(rf"Corrélation diagonale d'ordre {order} — frame {frame}", fontsize=14)
+                ax.set_xlabel("Indice particule $i$")
+                ax.set_ylabel(rf"$C_{{ii}}^{{({order})}}$")
+                ax.legend()
+                ax.grid(True, linestyle='--', alpha=0.5)
+
+            return ax
+
+        ani = FuncAnimation(fig, update, frames=Nframes, interval=1000/fps, blit=False)
+        output_path = os.path.join(self.output_dir, f"1D_correlation_order_{order}.mp4")
+        ani.save(output_path, writer="ffmpeg", fps=fps)
+        plt.close(fig)
+        print(f"🎞️ Corrélation d'ordre {order} enregistrée : {output_path}")
+
+
+    # ================================================================
+    # 🔹 CUMULANT D'ORDRE n
+    # ================================================================
+    def animate_cumulant(self, order=2, fps=24):
+        """
+        Anime les cumulants d'ordre n de la vitesses v.
+        - Si n <= 2 : affiche une carte 2D + diagonale
+        - Si n > 2  : affiche uniquement la diagonale moyenne
+        """
+        history = self.system.history_velocities
+        Nframes = len(history)
+        N = history[0].shape[0]
+
+        fig, ax = plt.subplots(figsize=(5, 5))
+
+        def update(frame):
+            ax.cla()
+            vs = history[frame]
+
+            # Centrage des vitesses
+            dv = vs - np.mean(vs)
+
+            # Cumulants d'ordre n
+            K = np.outer(dv, dv)**(order//2)
+
+            diag = np.diag(K)
+
+            if order <= 2:
+                im = ax.imshow(Kx, cmap='plasma', origin='lower')
+                #if frame == 0 :  plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+                ax.set_title(rf"$K^{{({order})}}_x(i,j)$ — frame {frame}", fontsize=14)
+                ax.set_xlabel("i")
+                ax.set_ylabel("j")
+            else:
+                ax.plot(np.arange(N), diag_x, color='darkorange', label=r"$K$")
+                ax.set_title(rf"Cumulant diagonal d'ordre {order} — frame {frame}", fontsize=14)
+                ax.set_xlabel("Indice particule $i$")
+                ax.set_ylabel(rf"$K_{{ii}}^{{({order})}}$")
+                ax.legend()
+                ax.grid(True, linestyle='--', alpha=0.5)
+
+            return ax
+
+        ani = FuncAnimation(fig, update, frames=Nframes, interval=1000/fps, blit=False)
+        output_path = os.path.join(self.output_dir, f"1D_cumulant_order_{order}.mp4")
+        ani.save(output_path, writer="ffmpeg", fps=fps)
+        plt.close(fig)
+        print(f"🎞️ Cumulant d'ordre {order} enregistré : {output_path}")
+
+# ================================================================
+# 🔹 4. Classe : animation visuelle
+# ================================================================
+class AnimationManager:
+    def __init__(self, system: ParticleSystem, output_dir="outputs"):
+        self.system = system
+        self.output_dir = output_dir
+        os.makedirs(output_dir, exist_ok=True)
+
+    def animate_positions(self, n_frames=200, fps=24, fmt="mp4", show_grid=True):
+        # --- Dimensions proportionnelles à la boîte ---
+        aspect_ratio = 0.1  # rapport hauteur/largeur pour ne pas avoir trop d’espace vertical
+        fig, ax = plt.subplots(figsize=(6, 6 * aspect_ratio))
+        ax.set_aspect('equal')  # Réglez l'aspect de l'axe pour qu'il soit égal
+        #ax.set(xlim=(0, self.system.box_size), ylim=(-self.system.ball_radius, self.system.ball_radius))  # L'axe y est fixé à une plage arbitraire car il n'y a qu'une dimension
+
+        ax.set_xlim(0, self.system.box_size)
+        ax.set_ylim(-self.system.ball_radius, self.system.ball_radius)
+        #ax.set_ylim(-1, 1)
+        ax.set_xticks([]); ax.set_yticks([])
+
+        # Ajout de la grille manuelle
+        if show_grid:
+            for i in range(1, int(self.system.box_size)):
+                ax.plot([i, i], [-self.system.ball_radius, self.system.ball_radius ], color='gray', linestyle='--', lw=0.5)
+            ax.plot([0, self.system.box_size], [self.system.ball_radius, self.system.ball_radius], color='gray', linestyle='--', lw=0.5)
+            ax.plot([0, self.system.box_size], [-self.system.ball_radius, -self.system.ball_radius], color='gray', linestyle='--', lw=0.5)
+
+        scat, = ax.plot([], [], 'o', color='teal', ms=self.system.ball_radius * 100)
+
+        def init():
+            scat.set_data([],[])
+            return scat,
+
+        def update(frame):
+            self.system.update()
+            scat.set_data(self.system.positions , self.system.positions*0 )
+            return scat,
+
+        ani = FuncAnimation(fig, update, frames=n_frames, init_func=init, blit=True, interval=50)
+        path = os.path.join(self.output_dir, f"1D_positions_animation.{fmt}")
+        ani.save(path, writer="ffmpeg", fps=fps, dpi=200)
+        plt.close(fig)
+        print("🎞️ Animation positions enregistrée :", path)
+
+    
+
+    def animate_1D_velocity_distribution(self, fps=24):
+        
+
+        # parametres gaussienne thermalisation
+        vs = self.system.history_velocities[0]
+
+        # --- Calcul des moyennes et écarts-types ---
+        mean_v = np.mean(vs)
+        sigma_v = np.std(vs)
+
+
+        # --- Calculer les gaussiennes correspondantes ---
+        def gaussian(v, mean, sigma): return 1/(np.sqrt(2*np.pi)*sigma) * np.exp(-0.5*((v - mean)/sigma)**2)
+
+        vmax = int(mean_v + 3*sigma_v) + 1 
+        pmax = 1 #gaussian(0, mean_v, sigma_v) + 0.005 
+        
+        v = np.linspace(-vmax, vmax, 300)
+        v_therm  = gaussian(v, mean_v, sigma_v)
+
+
+        fig, ax = plt.subplots(figsize=(5, 5))
+        ax.set_xlim(-vmax, vmax)
+        ax.set_ylim(0, pmax)  # normalisé
+        ax.set_xlabel(r"Vitesse $v$", fontsize=12)
+        ax.set_ylabel(r"Densité de probabilité $P(v)$", fontsize=12)
+        ax.set_title(r"Distribution normalisée de la  vitesse $v$", fontsize=14)
+        
+        # Initialisation vide
+        bins = np.linspace(-vmax, vmax, 30)
+        hist_v = ax.bar(bins[:-1], np.zeros_like(bins[:-1]), width=bins[1]-bins[0],
+                         color='goldenrod', alpha=0.6, label=r"$v$")
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.5)
+    
+        def update(frame):
+            ax.cla()  # efface le contenu précédent
+            
+            vs = self.system.history_velocities[frame]
+            
+            # Histogrammes normalisés
+            ax.hist(vs, bins=bins, density=True, color='goldenrod', alpha=0.4, label=r"$v$")
+
+            # --- Tracer les gaussiennes correspondantes ---
+            #ax.plot(v, v_therm, color='goldenrod', lw=2, linestyle='--', alpha=1)#,  label=rf"Gaussienne $v_x$ ($\mu$={mean_vx:.2f}, $\sigma$={sigma_vx:.2f})")
+            
+            # --- Habillage graphique ---
+            ax.set_xlim(-vmax, vmax)
+            ax.set_ylim(0, pmax)
+            ax.set_xlabel(r"Vitesse $v$", fontsize=12)
+            ax.set_ylabel(r"Densité de probabilité $P(v)$", fontsize=12)
+            ax.set_title(rf"Distribution normalisée de la vitesse — frame {frame}", fontsize=14)
+            #ax.set_title(rf"Thermalisation des vitesses — frame {frame}", fontsize=14)
+            # ✅ Légende fixée
+            ax.legend(fontsize=9, loc='upper right', frameon=True, facecolor='white', edgecolor='gray')
+
+            ax.grid(True, linestyle='--', alpha=0.5)
+            return ax
+    
+        ani = FuncAnimation(fig, update, frames=len(self.system.history_velocities),
+                            interval=1000/fps, blit=False)
+        
+        output_path = os.path.join(self.output_dir, "1D_velocity_distribution.mp4")
+        ani.save(output_path, writer="ffmpeg", fps=fps)
+        plt.close(fig)
+        print(f"🎞️ Animation des distributions de vitesses enregistrée dans {output_path}.")
+
+
+    def animate_moment_ordre_n_distribution(self, fps=24 , ordre = 2 ):
+        
+
+        # parametres gaussienne thermalisation
+        vs = self.system.history_velocities[0]
+
+        # --- Calcul des moyennes et écarts-types ---
+        mean_v = np.mean(vs)
+        sigma_v = np.std(vs)
+
+
+        # --- Calculer les gaussiennes correspondantes ---
+        def gaussian_X(v, mean, sigma): return 1/(np.sqrt(2*np.pi)*sigma) * np.exp(-0.5*((v - mean)/sigma)**2)       
+
+        def gaussian_Y(v, mean, sigma) : return  1/( ordre * np.power(np.abs(v),1-1/ordre)) * gaussian_X(v, mean, sigma) 
+
+        vmax = int((mean_v + 3*sigma_v)**ordre) +1 
+        
+        
+        if ordre % 2 == 1 :  
+            vmax_min  = -vmax
+            if ordre == 1 :
+                pmax = gaussian_X(0, mean_v, sigma_v)  + 0.005 
+            else :
+                pmax = 1 # gaussian_Y(0.000001, mean_v, sigma_v)  + 0.005 
+        else : 
+            vmax_min  = 0
+            pmax = 1 # gaussian_Y(0.1, mean_v, sigma_v) + 0.005 
+            
+        v = np.linspace(vmax_min, vmax, 300)
+        v_therm  = gaussian_Y(v, mean_v, sigma_v)
+
+
+        fig, ax = plt.subplots(figsize=(5, 5))
+        ax.set_xlim(vmax_min, vmax)
+        ax.set_ylim(0, pmax)  # normalisé
+        
+        # Initialisation vide
+        bins = np.linspace(vmax_min, vmax, int(30*ordre))
+        hist_v = ax.bar(bins[:-1], np.zeros_like(bins[:-1]), width=bins[1]-bins[0],
+                         color='goldenrod', alpha=0.6, label=rf"$v^{ordre}$")
+
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.5)
+    
+        def update(frame):
+            ax.cla()  # efface le contenu précédent
+            
+            vs = self.system.history_velocities[frame]
+            
+            # Histogrammes normalisés
+            ax.hist(vs, bins=bins, density=True, color='goldenrod', alpha=0.4, label=rf"$v^{ordre}$")
+
+            # --- Tracer les gaussiennes correspondantes ---
+            ax.plot(v, v_therm, color='goldenrod', lw=2, linestyle='--', alpha=1)#,  label=rf"Gaussienne $v_x$ ($\mu$={mean_vx:.2f}, $\sigma$={sigma_vx:.2f})")
+
+            # --- Habillage graphique ---
+            ax.set_xlim(vmax_min, vmax)
+            ax.set_ylim(0, pmax)
+            ax.set_xlabel(rf"$v^{ordre}$", fontsize=12)
+            ax.set_ylabel(rf"Densité de probabilité $P(v^{ordre})$", fontsize=12)
+            ax.set_title(rf"Distribution normalisée de la vitesse$^{ordre}$ — frame {frame}", fontsize=14)
+            # ✅ Légende fixée
+            ax.legend(fontsize=9, loc='upper right', frameon=True, facecolor='white', edgecolor='gray')
+
+            ax.grid(True, linestyle='--', alpha=0.5)
+            return ax
+    
+        ani = FuncAnimation(fig, update, frames=len(self.system.history_velocities),
+                            interval=1000/fps, blit=False)
+        
+        output_path = os.path.join(self.output_dir, f"1D_velocity_distribution_order_{ordre}.mp4")
+        ani.save(output_path, writer="ffmpeg", fps=fps)
+        plt.close(fig)
+        print(f"🎞️ Animation des distributions de vitesses order : {ordre} enregistrée dans {output_path}.")
+
+
+
+# ================================================================
+# 🔹 5. Exemple d’utilisation
+# ================================================================
+if __name__ == "__main__":
+    system = ParticleSystem(num_balls=10, T=10.0)
+    system.init_positions("uniform")
+    system.init_velocities("double_gaussian")
+
+    anim = AnimationManager(system)
+    anim.animate_positions(n_frames=600, fps=60, fmt="mp4")
+    anim.animate_1D_velocity_distribution(fps=60)
+    #anim.animate_moment_ordre_n_distribution(fps=60, ordre = 1 )
+    #anim.animate_moment_ordre_n_distribution(fps=60, ordre = 2 )
+    #anim.animate_moment_ordre_n_distribution(fps=60, ordre = 3 )
+    #anim.animate_moment_ordre_n_distribution(fps=60, ordre = 4 )
+    #anim.animate_moment_ordre_n_distribution(fps=60, ordre = 5 )
+    #anim.animate_moment_ordre_n_distribution(fps=60, ordre = 6 )
+
+    #recorder = SimulationRecorder(system)
+    #recorder.save_data()
+
+    #data, _ = SimulationRecorder.load_data()
+    #analysis = PhysicalAnalysis(data["positions"], data["velocities"])
+    #analysis.animate_moments()
+    ### Correlation et Cummulante a finie 
+    #analyzer = VelocityAnalyzer(system, output_dir="animations")
+    #analyzer.animate_correlation(order=2)
+    #analyzer.animate_cumulant(order=2)
+```
+
 ## 🧰 Fichier `requirements.txt`
 ```txt
 numpy
 matplotlib
 imagemagick
 ffmpeg
+scipy
+```
+## 🧰 Fichier `.gitignore`
+```
+*.pyc
+*.pyo
+*.pyd
+
+._.ipynb_checkpoints
+._.gitignore
+._main.ipynb
+._README.md
+._requirements.txt
+
+.gitignore
+
+.ipynb_checkpoints/
+versions/
+outputs/
+animations/
 ```
 
-## **ouvrir** et **afficher le contenu** du fichier './output/simulation_data.npz'
+## **ouvrir** et **afficher le contenu** du fichier `./output/simulation_data.npz`
 ```python
 import numpy as np
 
@@ -568,7 +1073,7 @@ for key in data.files:
 
 ---
 
-## ⚙️ *Lancer Jupyter Notebook depuis le répertoire d’une clé USB* en utilisant soit un **venv Python** soit **conda**, et **installer les dépendances depuis `requirements.txt`**.
+## ⚙️ **Lancer Jupyter Notebook depuis le répertoire d’une clé USB** en utilisant soit un **venv Python** soit **conda**, et **installer les dépendances depuis `requirements.txt`**.
 
 > Supposons que ta clé est montée sur `/Volumes/NO NAME` et que ton projet est dans `/Volumes/NO NAME/N_Corps_elastiques_1D_2D`.
 
