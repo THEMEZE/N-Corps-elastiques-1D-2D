@@ -7,6 +7,82 @@
 - d’analyser **les observables physiques** (moments, histogrammes, etc.),
 - et de **générer des animations** (GIF, MP4, images de frames).
 
+![Demo](./output/2D_positions_animation.gif)
+
+---
+
+## ⚙️ Clonage 
+
+### 🧩 1️⃣ — Si tu veux cloner et le dossier est à créer
+Git crée automatiquement le dossier quand tu clones :
+```bash
+git clone git@github.com:THEMEZE/N-Corps-elastiques-1D-2D.git
+```
+> 👉 Cela crée automatiquement le répertoire :
+```mathematica
+./N-Corps-elastiques-1D-2D/
+```
+
+### 🧩 2️⃣ — Si tu veux juste créer le dossier sans cloner
+```bash
+mkdir -p N-Corps-elastiques-1D-2D
+cd N-Corps-elastiques-1D-2D
+```
+> L’option `-p` **permet de ne pas afficher d’erreur si le dossier existe déjà**.
+
+---
+
+## ⚙️ Lancer le jupyter notebook avec environement viruelle
+
+### Exemple complet (copier-coller, venv sur le home, clé `/Volumes/NO NAME/N-Corps-elastiques-1D-2D`)
+```bash
+# Terminal (macOS)
+cd "/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
+python3 -m venv ~/venvs/N-Corps-elastiques-1D-2D_env
+source ~/venvs/N-Corps-elastiques-1D-2D_env/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install jupyter ipykernel
+python -m ipykernel install --user --name N-Corps-elastiques-1D-2D_env --display-name "Python (N-Corps-elastiques-1D-2D_env)"
+jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
+```
+
+---
+
+## ▶️ run
+> dans `main.ipynb`
+- 2D lancer la cellule **Calcules et repésentaions `simulation_gaz_2d.py`** dans `/output/`
+    - `2D_positions_animation.mp4`: animation spatial
+    - `2D_velocity_distribution.mp4`: animation distibution de vitesse 
+    - `2D_velocity_distribution_order_1.mp4` ... `2D_velocity_distribution_order_n.mp4` ; animation distibution de vitesse ^ 1  ... n .
+- 1D lancer la cellule **Calcules et repésentaions `simulation_gaz_1d.py`** dans `/output/`
+    - `1D_positions_animation.mp4`: animation spatial
+    - `1D_velocity_distribution.mp4`: animation distibution de vitesse 
+
+
+---
+
+🧩 3️⃣ — GIF animé
+
+Si la vidéo est courte, le plus simple est de la convertir en **GIF** :
+
+```bash
+ffmpeg -i ./output/2D_positions_animation.mp4 -vf "fps=10,scale=800:-1:flags=lanczos" ./output/2D_positions_animation.gif
+```
+
+
+
+---
+
+## ⚙️ Git Mise à jour
+```bash
+git add .
+git commit -m "Mise à jour"
+git push
+```
+
+
+
 ## 🚀 Fichier : `simulation_gaz_2d.py` En fait c'est dans `main.ipynb`
 ```python
 import numpy as np
@@ -1165,18 +1241,17 @@ jupyter notebook --notebook-dir="."
 - **requirements.txt incomplet / erreur pip :** regarde les lignes d’erreur, certaines bibliothèques peuvent nécessiter des dépendances système (Xcode command line tools, libffi, etc.).
 - **Utiliser JupyterLab :** remplace `jupyter notebook` par `jupyter lab` si tu préfères l’interface moderne (installer `jupyterlab`).
 
-### Exemple complet (copier-coller, venv sur le home, clé `/Volumes/NO NAME/N_Corps_elastiques_1D_2D`)
+### Exemple complet (copier-coller, venv sur le home, clé `/Volumes/NO NAME/N-Corps-elastiques-1D-2D`)
 ```bash
 # Terminal (macOS)
-cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
-python3 -m venv ~/venvs/N_Corps_elastiques_1D_2D_env
-source ~/venvs/N_Corps_elastiques_1D_2D_env/bin/activate
+cd "/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
+python3 -m venv ~/venvs/N-Corps-elastiques-1D-2D_env
+source ~/venvs/N-Corps-elastiques-1D-2D_env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 pip install jupyter ipykernel
-python -m ipykernel install --user --name N_Corps_elastiques_1D_2D_env --display-name "Python (N_Corps_elastiques_1D_2D_env)"
-jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
-
+python -m ipykernel install --user --name N-Corps-elastiques-1D-2D_env --display-name "Python (N-Corps-elastiques-1D-2D_env)"
+jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 ```
 ---
 
