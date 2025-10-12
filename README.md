@@ -7,9 +7,9 @@
 - d’analyser **les observables physiques** (moments, histogrammes, etc.),
 - et de **générer des animations** (GIF, MP4, images de frames).
 
-[![Demo Video](./outputs/frames_2D_positions_animation/frame_00001.png)](./outputs/2D_positions_animation.mp4)
+<!-- [![Demo Video](./outputs/frames_2D_positions_animation/frame_00001.png)](./outputs/2D_positions_animation.mp4) -->
 
-<!-- ![Demo](./output/2D_positions_animation.gif) -->
+![Demo](./vitrines/2D_positions_animation.gif)
 
 ---
 
