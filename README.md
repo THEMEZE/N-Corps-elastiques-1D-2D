@@ -7,6 +7,8 @@
 - d’analyser **les observables physiques** (moments, histogrammes, etc.),
 - et de **générer des animations** (GIF, MP4, images de frames).
 
+#[![Demo Video](./preview.png)](./demo.mp4)
+
 ![Demo](./output/2D_positions_animation.gif)
 
 ---
@@ -51,11 +53,11 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 
 ## ▶️ run
 > dans `main.ipynb`
-- 2D lancer la cellule **Calcules et repésentaions `simulation_gaz_2d.py`** dans `/output/`
+- 2D lancer la cellule **Calcules et repésentaions `simulation_gaz_2d.py`** dans `/outputs/`
     - `2D_positions_animation.mp4`: animation spatial
     - `2D_velocity_distribution.mp4`: animation distibution de vitesse 
     - `2D_velocity_distribution_order_1.mp4` ... `2D_velocity_distribution_order_n.mp4` ; animation distibution de vitesse ^ 1  ... n .
-- 1D lancer la cellule **Calcules et repésentaions `simulation_gaz_1d.py`** dans `/output/`
+- 1D lancer la cellule **Calcules et repésentaions `simulation_gaz_1d.py`** dans `/outputs/`
     - `1D_positions_animation.mp4`: animation spatial
     - `1D_velocity_distribution.mp4`: animation distibution de vitesse 
 
@@ -67,7 +69,7 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 Si la vidéo est courte, le plus simple est de la convertir en **GIF** :
 
 ```bash
-ffmpeg -i ./output/2D_positions_animation.mp4 -vf "fps=10,scale=800:-1:flags=lanczos" ./output/2D_positions_animation.gif
+ffmpeg -i ./outputs/2D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/2D_positions_animation.gif
 ```
 
 
