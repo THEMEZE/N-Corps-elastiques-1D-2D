@@ -132,10 +132,6 @@ mkdir -p "$output_dir"
 ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
 ```
 
-
-
-
-
 ---
 
 ## ⚙️ Git Mise à jour
