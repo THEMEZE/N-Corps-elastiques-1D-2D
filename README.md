@@ -7,9 +7,9 @@
 - d’analyser **les observables physiques** (moments, histogrammes, etc.),
 - et de **générer des animations** (GIF, MP4, images de frames).
 
-<!-- [![Demo Video](./preview.png)](./demo.mp4) -->
+[![Demo Video](./outputs/frames_2D_positions_animation/frame_00001.png)](./outputs/2D_positions_animation.mp4)
 
-![Demo](./output/2D_positions_animation.gif)
+<!-- ![Demo](./output/2D_positions_animation.gif) -->
 
 ---
 
@@ -64,13 +64,75 @@ jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 
 ---
 
-🧩 3️⃣ — GIF animé
+## ⚙️ Convertiseur
+
+### 🧩 3️⃣ — GIF animé
 
 Si la vidéo est courte, le plus simple est de la convertir en **GIF** :
 
 ```bash
 ffmpeg -i ./outputs/2D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/2D_positions_animation.gif
 ```
+
+```bash
+ffmpeg -i ./outputs/1D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/1D_positions_animation.gif
+```
+
+## 🎬 Script bash qui extrait les images (frames) d’une vidéo
+
+```bash
+#!/bin/bash
+
+# Chemins
+input="./outputs/2D_positions_animation.mp4"
+output_dir="./outputs/frames_2D_positions_animation"
+
+# Crée le dossier s'il n'existe pas
+mkdir -p "$output_dir"
+
+# Extraction des frames à 60 fps
+ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
+```
+
+### En decoupé 
+
+> Animation spatial 2D 
+```bash
+input="./outputs/2D_positions_animation.mp4"
+output_dir="./outputs/frames_2D_positions_animation"
+```
+
+> Animation distribution vistesse 2D 
+```bash
+input="./outputs/2D_velocity_distribution.mp4"
+output_dir="./outputs/frames_2D_velocity_distribution"
+```
+
+> Animation distribution vistesse 2D par exemple ordre 1 
+```bash
+input="./outputs/2D_velocity_distribution_order_2.mp4"
+output_dir="./outputs/2D_velocity_distribution_order_2"
+```
+
+> Animation spatial 1D 
+```bash
+input="./outputs/1D_positions_animation.mp4"
+output_dir="./outputs/frames_1D_positions_animation"
+```
+
+> Animation distribution vistesse 1D 
+```bash
+input="./outputs/1D_velocity_distribution.mp4"
+output_dir="./outputs/frames_1D_velocity_distribution"
+```
+
+> Convertir
+```bash
+mkdir -p "$output_dir"
+ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
+```
+
+
 
 
 
@@ -1153,7 +1215,7 @@ for key in data.files:
 
 ## ⚙️ **Lancer Jupyter Notebook depuis le répertoire d’une clé USB** en utilisant soit un **venv Python** soit **conda**, et **installer les dépendances depuis `requirements.txt`**.
 
-> Supposons que ta clé est montée sur `/Volumes/NO NAME` et que ton projet est dans `/Volumes/NO NAME/N_Corps_elastiques_1D_2D`.
+> Supposons que ta clé est montée sur `/Volumes/NO NAME` et que ton projet est dans `/Volumes/NO NAME/N-Corps-elastiques-1D-2D`.
 
 
 ### Option A — méthode simple avec **python - venv** (macOS / Linux / Terminal zsh)
@@ -1162,9 +1224,9 @@ for key in data.files:
 
 ```bash
 # créer venv dans ton home (ou .venvs)
-python3 -m venv ~/venvs/N_Corps_elastiques_1D_2D_env
+python3 -m venv ~/venvs/N-Corps-elastiques-1D-2D_env
 # activer
-source ~/venvs/N_Corps_elastiques_1D_2D_env/bin/activate
+source ~/venvs/N-Corps-elastiques-1D-2D_env/bin/activate
 # mettre pip à jour
 pip install --upgrade pip
 # installer les dépendances
@@ -1172,49 +1234,49 @@ pip install -r requirements.txt
 # installer jupyter et ipykernel si besoin
 pip install jupyter ipykernel
 # enregistrer le kernel (facultatif mais pratique)
-python -m ipykernel install --user --name N_Corps_elastiques_1D_2D_env --display-name "Python (N_Corps_elastiques_1D_2D_env)"
+python -m ipykernel install --user --name N-Corps-elastiques-1D-2D_env --display-name "Python (N-Corps-elastiques-1D-2D_env)"
 ```
 
 2. lancer Jupyter Notebook **dans le dossier de la clé** :
 ```bash
-# méthode 1: lancer depuis le répertoire ouvert (si tu as cd dans /Volumes/NO NAME/N_Corps_elastiques_1D_2D)
+# méthode 1: lancer depuis le répertoire ouvert (si tu as cd dans /Volumes/NO NAME/N-Corps-elastiques-1D-2D)
 jupyter notebook
 
 # ou méthode 2: lancer explicitement en pointant le dossier de la clé
-jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
+jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 ```
 
-Ensuite dans l’interface web, choisis le kernel `Python (N_Corps_elastiques_1D_2D_env)` si tu as enregistré le kernel.
+Ensuite dans l’interface web, choisis le kernel `Python (N-Corps-elastiques-1D-2D_env)` si tu as enregistré le kernel.
 
 
 ### Option B — avec conda (si tu utilises Anaconda / Miniconda)
 
 1. depuis le terminal :
 ```bash
-cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
+cd "/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 # créer l'env (ici on installe via pip requirements.txt)
-conda create -n N_Corps_elastiques_1D_2D_env python=3.11 -y
-conda activate N_Corps_elastiques_1D_2D_env
+conda create -n N-Corps-elastiques-1D-2D_env python=3.11 -y
+conda activate N-Corps-elastiques-1D-2D_env
 # installer pip si besoin
 conda install pip -y
 pip install -r requirements.txt
 pip install jupyter ipykernel
-python -m ipykernel install --user --name N_Corps_elastiques_1D_2D_env --display-name "Conda (N_Corps_elastiques_1D_2D_env)"
+python -m ipykernel install --user --name N-Corps-elastiques-1D-2D_env --display-name "Conda (N-Corps-elastiques-1D-2D_env)"
 # lancer jupyter
-jupyter notebook --notebook-dir="/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
+jupyter notebook --notebook-dir="/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 ```
 
 Si tu as un environment.yml tu peux faire :
 ```bash
-conda env create -f environment.yml -n N_Corps_elastiques_1D_2D_env
-conda activate N_Corps_elastiques_1D_2D_env
+conda env create -f environment.yml -n N-Corps-elastiques-1D-2D_env
+conda activate N-Corps-elastiques-1D-2D_env
 ```
 
 
 ### Option C — si tu veux éviter d’installer un env : lancer Jupyter avec `python -m` depuis la clé (moins recommandé)
 Si tu as déjà Python sur la clé (rare), ou si tu veux utiliser l’interpréteur système :
 ```bash
-cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
+cd "/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 python3 -m pip install --user -r requirements.txt   # installe dans ~/.local
 python3 -m notebook --notebook-dir="."
 ```
@@ -1224,7 +1286,7 @@ python3 -m notebook --notebook-dir="."
 Si tu veux absolument créer le venv sur la clé :
 
 ```bash
-cd "/Volumes/NO NAME/N_Corps_elastiques_1D_2D"
+cd "/Volumes/NO NAME/N-Corps-elastiques-1D-2D"
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -1237,7 +1299,7 @@ jupyter notebook --notebook-dir="."
 
 - **Permission denied / Read-only file system :** la clé est montée en lecture seule ; démonte et remonte en écriture ou vérifie que la clé n’est pas verrouillée physiquement.
 
-- **Nom de volume avec espaces :** entoure le chemin de guillemets comme ci-dessus `"/Volumes/NO NAME/N_Corps_elastiques_1D_2D"`.
+- **Nom de volume avec espaces :** entoure le chemin de guillemets comme ci-dessus `"/Volumes/NO NAME/N-Corps-elastiques-1D-2D"`.
 - **Clé lente / accès disque lent :** créer le venv local + travailler sur la clé (notebooks sur la clé) ou copier le repo en local.
 - **Kernel absent dans Jupyter :** installe `ipykernel` et exécute `python -m ipykernel install --user --name ....`
 - **requirements.txt incomplet / erreur pip :** regarde les lignes d’erreur, certaines bibliothèques peuvent nécessiter des dépendances système (Xcode command line tools, libffi, etc.).
