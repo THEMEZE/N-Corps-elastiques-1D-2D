@@ -20,6 +20,9 @@
   <em>2D : Positions (gauche) — Distribution de Vitesses (droite)</em>
 </p>
 
+> [!IMPORTANT]
+> Thermalisation
+
 <p align="center">
   <img src="./vitrines/1D_positions_animation.gif" width="45%">
   <img src="./vitrines/1D_velocity_distribution.gif" width="45%">
@@ -28,6 +31,53 @@
 <p align="center">
   <em>1D : Positions (gauche) — Distribution de Vitesses (droite)</em>
 </p>
+
+> [!IMPORTANT]
+> Distribution de vistesse constant
+
+<!-- Bloc 2D -->
+<div align="center">
+
+<img src="./vitrines/2D_positions_animation.gif" width="45%">
+<img src="./vitrines/2D_velocity_distribution.gif" width="45%">
+
+<br>
+
+<em>2D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+
+</div>
+
+<div align="center">
+
+> [!IMPORTANT]  
+> **Thermalisation**
+
+</div>
+
+---
+
+<!-- Bloc 1D -->
+<div align="center">
+
+<img src="./vitrines/1D_positions_animation.gif" width="45%">
+<img src="./vitrines/1D_velocity_distribution.gif" width="45%">
+
+<br>
+
+<em>1D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+
+</div>
+
+<div align="center">
+
+> [!IMPORTANT]  
+> **Distribution de vitesse constante**
+
+</div>
+
+
+
+
 
 
 ---
