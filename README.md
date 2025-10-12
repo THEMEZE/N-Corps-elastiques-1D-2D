@@ -36,16 +36,16 @@
 > Distribution de vistesse constant
 
 <!-- Bloc 2D -->
-<div align="center">
+<div align="center" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
 
-<img src="./vitrines/2D_positions_animation.gif" width="45%">
-<img src="./vitrines/2D_velocity_distribution.gif" width="45%">
-
-<br>
-
-<em>2D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+  <img src="./vitrines/2D_positions_animation.gif" width="45%" style="vertical-align: middle;">
+  <img src="./vitrines/2D_velocity_distribution.gif" width="45%" style="vertical-align: middle;">
 
 </div>
+
+<p align="center">
+  <em>2D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+</p>
 
 <div align="center">
 
@@ -57,16 +57,16 @@
 ---
 
 <!-- Bloc 1D -->
-<div align="center">
+<div align="center" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
 
-<img src="./vitrines/1D_positions_animation.gif" width="45%">
-<img src="./vitrines/1D_velocity_distribution.gif" width="45%">
-
-<br>
-
-<em>1D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+  <img src="./vitrines/1D_positions_animation.gif" width="45%" style="vertical-align: middle;">
+  <img src="./vitrines/1D_velocity_distribution.gif" width="45%" style="vertical-align: middle;">
 
 </div>
+
+<p align="center">
+  <em>1D : Positions (gauche) — Distribution de Vitesses (droite)</em>
+</p>
 
 <div align="center">
 
@@ -74,6 +74,7 @@
 > **Distribution de vitesse constante**
 
 </div>
+
 
 
 
