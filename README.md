@@ -1,15 +1,15 @@
 # 🧠 N-Corps-elastiques-1D-2D
 
+<!-- [![Demo Video](./outputs/frames_2D_positions_animation/frame_00001.png)](./outputs/2D_positions_animation.mp4) -->
+
+![Demo](./vitrines/2D_positions_animation.gif)
+
 ---
 
 - d’étudier **la dynamique des particules** (trajectoires, collisions),
 - d’explorer **différentes distributions initiales**,
 - d’analyser **les observables physiques** (moments, histogrammes, etc.),
 - et de **générer des animations** (GIF, MP4, images de frames).
-
-<!-- [![Demo Video](./outputs/frames_2D_positions_animation/frame_00001.png)](./outputs/2D_positions_animation.mp4) -->
-
-![Demo](./vitrines/2D_positions_animation.gif)
 
 
 <!-- Bloc 2D -->
@@ -26,7 +26,7 @@
 
 <!-- <div align="center"> -->
 
-> [!IMPORTANT]  
+> [!TIP]  
 > **Thermalisation**
 
 <!-- </div> -->
