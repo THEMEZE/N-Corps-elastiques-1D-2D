@@ -1223,6 +1223,163 @@ if __name__ == "__main__":
     #analyzer.animate_correlation(order=2)
     #analyzer.animate_cumulant(order=2)
 ```
+## 🧰 
+
+tu veux donc **passer de ton simulateur de particules classiques** (Bose–Hubbard discret) à un **simulateur de dynamique quantique 1D** correspondant au **modèle de Lieb–Liniger**, c’est-à-dire un gaz de bosons 1D continus avec interaction delta :
+
+$$
+\hat{H}= 
+- \frac{\hbar^2}{2m} 
+\sum_i 
+\hat{\psi}^\dagger(x_i) 
+\frac{\partial^2}{\partial x^2} 
+\hat{\psi}(x_i)
++ 
+\frac{g}{2} 
+\int dx \;
+\hat{\psi}^\dagger(x)
+\hat{\psi}^\dagger(x)
+\hat{\psi}(x)
+\hat{\psi}(x)
+$$
+
+$$
+\hat{H}= - \frac{\hbar^2}{2m}\sum_i \partial_{x_i}^2 + g \sum_{i<j} \delta ( x_i - x_j )
+$$
+
+
+Après la collision des deux paquets d’onde, la partie de phase
+$$\Phi(\theta_1 - \theta_2) = 2 \arctan\!\left( \frac{\hbar (\theta_1 - \theta_2)}{m g} \right)$$
+induit un décalage de position effective
+
+$$\Delta = \frac{m}{\hbar} \frac{d\Phi}{d\theta},$$
+
+visible dans l’évolution de la phase spatiale $\arg(\psi(x,t))$ et des interférences dans $n(k,t)$
+
+
+### ⚙️ Objectif
+
+On veut **restructurer ton code orienté objet** (`ParticleSystem`, `SimulationRecorder`, `AnimationManager`, …)
+pour simuler la **dynamique de Lieb–Liniger**, c’est-à-dire :
+
+- des **bosons indistinguables** (onde symétrique)
+- une **interaction de contact** $g\delta(x_i - x_j)$
+- une **évolution quantique** (équation de Schrödinger)
+- possibilité de visualiser :
+    - la densité $\vert \psi(x,t)\vert^2$ 
+    - le champ de phase,
+    - et éventuellement les corrélations $g^{(1)}(x,x')$ ou $g^{(2)}(x,x')$.
+
+### 💡 Approche numérique possible
+
+Le modèle de Lieb–Liniger est **non trivial à simuler directement** en temps réel, mais voici trois approches possibles selon ton but :
+
+| Méthode                                              | Description                                                                                                                   | Difficulté                                  |            |                   |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------- | ----------------- |
+| **Split-step Fourier (méthode de Gross–Pitaevskii)** | Approximation champ moyen, utile pour grande ( N ). On résout ( i\hbar \partial_t \psi = -\frac{\hbar^2}{2m}\nabla^2 \psi + g | \psi                                        | ^2 \psi ). | 🟢 Facile à coder |
+| **Exact Diagonalization (ED)**                       | On diagonalise le Hamiltonien discrétisé sur une grille fine.                                                                 | 🟠 Moyen, limité à petits systèmes          |            |                   |
+| **Quantum Monte Carlo / tDMRG**                      | Simulation exacte du modèle de Lieb–Liniger via matrice densité ou Bethe Ansatz numérique.                                    | 🔴 Avancé, nécessite bibliothèques externes |            |                   |
+
+### 🚀 Proposition concrète
+
+Je te propose de **partir sur la version champ moyen (Gross–Pitaevskii)**
+— simple à coder et proche du Lieb–Liniger dans la limite du champ moyen.
+
+Voici un **squelette de code Python structuré en classes**, proche de ton code actuel :
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import os
+
+ħ = 1.0
+m = 1.0
+
+# ================================================================
+# 🔹 1. Classe : système de Lieb-Liniger (champ moyen GPE)
+# ================================================================
+class LiebLiniger1D:
+    def __init__(self, Nx=512, L=10.0, g=1.0, dt=0.001):
+        self.Nx = Nx
+        self.L = L
+        self.dx = L / Nx
+        self.g = g
+        self.dt = dt
+
+        # Espace et impulsion
+        self.x = np.linspace(0, L, Nx, endpoint=False)
+        self.k = 2 * np.pi * np.fft.fftfreq(Nx, d=self.dx)
+
+        # Champ initial ψ(x,0)
+        self.psi = np.exp(-0.5 * ((self.x - L/2) / 0.5)**2) * np.exp(1j * 0.0 * self.x)
+        self.psi /= np.sqrt(np.sum(np.abs(self.psi)**2) * self.dx)
+
+        # Historique
+        self.history = []
+
+    # ==============================================================
+    # 🔹 Évolution temporelle par Split-step Fourier
+    # ==============================================================
+    def evolve(self, n_steps=1000, save_every=10):
+        expK = np.exp(-1j * (ħ * self.k**2) / (2 * m) * self.dt)  # cinétique
+        for t in range(n_steps):
+            # Étape non-linéaire
+            self.psi *= np.exp(-1j * self.g * np.abs(self.psi)**2 * self.dt / ħ)
+            # Étape cinétique en espace de Fourier
+            psi_k = np.fft.fft(self.psi)
+            psi_k *= expK
+            self.psi = np.fft.ifft(psi_k)
+            # Normalisation
+            self.psi /= np.sqrt(np.sum(np.abs(self.psi)**2) * self.dx)
+            # Sauvegarde
+            if t % save_every == 0:
+                self.history.append(np.copy(self.psi))
+
+# ================================================================
+# 🔹 2. Classe : visualisation
+# ================================================================
+class AnimationLiebLiniger:
+    def __init__(self, system: LiebLiniger1D, output_dir="outputs"):
+        self.system = system
+        self.output_dir = output_dir
+        os.makedirs(output_dir, exist_ok=True)
+
+    def animate_density(self, fps=30):
+        fig, ax = plt.subplots(figsize=(6, 4))
+        line, = ax.plot([], [], lw=2)
+        ax.set_xlim(0, self.system.L)
+        ax.set_ylim(0, 1.2 * np.max(np.abs(self.system.psi)**2))
+        ax.set_xlabel(r"$x$")
+        ax.set_ylabel(r"$|\psi(x,t)|^2$")
+        ax.set_title("Évolution de la densité — Lieb–Liniger (champ moyen)")
+
+        def update(frame):
+            psi = self.system.history[frame]
+            density = np.abs(psi)**2
+            line.set_data(self.system.x, density)
+            return line,
+
+        ani = FuncAnimation(fig, update, frames=len(self.system.history),
+                            interval=1000/fps, blit=True)
+        path = os.path.join(self.output_dir, "lieb_liniger_density.mp4")
+        ani.save(path, writer="ffmpeg", fps=fps)
+        plt.close(fig)
+        print(f"🎞️ Animation enregistrée : {path}")
+
+# ================================================================
+# 🔹 3. Exemple d’utilisation
+# ================================================================
+if __name__ == "__main__":
+    system = LiebLiniger1D(Nx=512, L=10.0, g=5.0, dt=0.0005)
+    system.evolve(n_steps=2000, save_every=10)
+    anim = AnimationLiebLiniger(system)
+    anim.animate_density(fps=60)
+
+```
+
+
+
 
 ## 🧰 Fichier `requirements.txt`
 ```txt
