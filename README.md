@@ -141,6 +141,67 @@ ffmpeg -i ./outputs/1D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=la
 ffmpeg -i ./outputs/1D_velocity_distribution.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/1D_velocity_distribution.gif
 ```
 
+#### D'un coup 
+```bash
+ffmpeg -i ./outputs/2D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/2D_positions_animation.gif
+
+ffmpeg -i ./outputs/2D_velocity_distribution.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/2D_velocity_distribution.gif
+
+ffmpeg -i ./outputs/1D_positions_animation.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/1D_positions_animation.gif
+
+ffmpeg -i ./outputs/1D_velocity_distribution.mp4 -vf "fps=60,scale=800:-1:flags=lanczos" ./outputs/1D_velocity_distribution.gif
+```
+
+> 🧩 Script : `convert_and_copy.sh`
+```bash
+#!/bin/bash
+
+# Dossiers
+INPUT_DIR="./outputs"
+OUTPUT_DIR="./vitrines"
+
+# Crée le dossier vitrines s'il n'existe pas
+mkdir -p "$OUTPUT_DIR"
+
+# Liste des fichiers à convertir
+declare -a FILES=(
+  "2D_positions_animation"
+  "2D_velocity_distribution"
+  "1D_positions_animation"
+  "1D_velocity_distribution"
+)
+
+# Paramètres communs
+FPS=60
+SCALE=800
+
+echo "🎞️ Conversion des fichiers MP4 en GIF..."
+for NAME in "${FILES[@]}"; do
+    MP4_PATH="$INPUT_DIR/${NAME}.mp4"
+    GIF_PATH="$INPUT_DIR/${NAME}.gif"
+    FINAL_PATH="$OUTPUT_DIR/${NAME}.gif"
+
+    if [ -f "$MP4_PATH" ]; then
+        echo "➡️  Conversion de $MP4_PATH ..."
+        ffmpeg -y -i "$MP4_PATH" -vf "fps=$FPS,scale=${SCALE}:-1:flags=lanczos" "$GIF_PATH"
+
+        echo "📂 Copie de $GIF_PATH vers $FINAL_PATH ..."
+        cp -f "$GIF_PATH" "$FINAL_PATH"
+    else
+        echo "⚠️  Fichier manquant : $MP4_PATH"
+    fi
+done
+
+echo "✅ Conversion et copie terminées !"
+```
+
+```bash
+chmod +x convert_and_copy.sh
+./convert_and_copy.sh
+```
+
+
+
 ## 🎬 Script bash qui extrait les images (frames) d’une vidéo
 
 ```bash
@@ -193,6 +254,77 @@ output_dir="./outputs/frames_1D_velocity_distribution"
 ```bash
 mkdir -p "$output_dir"
 ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
+```
+
+#### D'un coup 
+```bash
+input="./outputs/2D_positions_animation.mp4"
+output_dir="./outputs/frames_2D_positions_animation"
+mkdir -p "$output_dir"
+ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
+
+input="./outputs/2D_velocity_distribution.mp4"
+output_dir="./outputs/frames_2D_velocity_distribution"
+mkdir -p "$output_dir"
+ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
+
+input="./outputs/1D_positions_animation.mp4"
+output_dir="./outputs/frames_1D_positions_animation"
+mkdir -p "$output_dir"
+ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
+
+input="./outputs/1D_positions_animation.mp4"
+output_dir="./outputs/frames_1D_positions_animation"
+mkdir -p "$output_dir"
+ffmpeg -i "$input" -vf "fps=60" "$output_dir/frame_%05d.png"
+```
+
+> 🧩 Script : `extract_and_copy_frames.sh`
+```bach
+#!/bin/bash
+
+# Répertoire source et destination
+INPUT_DIR="./outputs"
+DEST_DIR="/Users/themezeguillaume/Documents/Presentation-These/figures"
+
+# Crée le dossier de destination s’il n’existe pas
+mkdir -p "$DEST_DIR"
+
+# Liste des vidéos à traiter
+declare -a VIDEOS=(
+  "2D_positions_animation"
+  "2D_velocity_distribution"
+  "1D_positions_animation"
+  "1D_velocity_distribution"
+)
+
+FPS=60
+
+echo "🎞️ Extraction des frames à $FPS fps..."
+
+for NAME in "${VIDEOS[@]}"; do
+    INPUT="$INPUT_DIR/${NAME}.mp4"
+    OUTPUT_DIR="$INPUT_DIR/frames_${NAME}"
+
+    if [ -f "$INPUT" ]; then
+        echo "➡️  Traitement de $INPUT ..."
+        mkdir -p "$OUTPUT_DIR"
+        ffmpeg -y -i "$INPUT" -vf "fps=$FPS" "$OUTPUT_DIR/frame_%05d.png"
+
+        # Copie vers le dossier de présentation
+        echo "📂 Copie de $OUTPUT_DIR vers $DEST_DIR ..."
+        rsync -a --delete "$OUTPUT_DIR" "$DEST_DIR/"
+    else
+        echo "⚠️  Fichier manquant : $INPUT"
+    fi
+done
+
+echo "✅ Extraction et copie terminées !"
+```
+
+```bash
+chmod +x extract_and_copy_frames.sh
+./extract_and_copy_frames.sh
 ```
 
 ---
